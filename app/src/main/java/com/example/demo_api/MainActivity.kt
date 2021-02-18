@@ -5,6 +5,7 @@ import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import com.google.gson.Gson
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.IOException
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             var connection: HttpURLConnection? = null
 
             try {
-                val url = URL("https://run.mocky.io/v3/48e01583-5726-4974-9f86-6b15cda1832c")
+                val url = URL( "https://run.mocky.io/v3/7afe1d8f-9b48-4e59-a8ac-c361a9ee97930")
                 connection = url.openConnection() as HttpURLConnection
                 connection.doInput = true
                 connection.doOutput = true
@@ -88,6 +89,28 @@ class MainActivity : AppCompatActivity() {
 
             if (result != null) {
                 Log.i("JSON RESPONSE RESULT", result)
+
+                val responseData = Gson().fromJson(result, ResponseData::class.java)
+                Log.i("Message", responseData.message)
+                Log.i("User Id", "${responseData.user_id}")
+                Log.i("Name", responseData.name)
+                Log.i("Email", responseData.email)
+                Log.i("Mobile", "${responseData.mobile}")
+
+                // Profile Details
+                Log.i("Is Profile Completed", "${responseData.profile_details.is_profile_completed}")
+                Log.i("Rating", "${responseData.profile_details.rating}")
+
+                // Data List Details.
+                Log.i("Data List Size", "${responseData.data_list.size}")
+
+                for (item in responseData.data_list.indices) {
+                    Log.i("Value $item", "${responseData.data_list[item]}")
+
+                    Log.i("ID", "${responseData.data_list[item].id}")
+                    Log.i("Value", responseData.data_list[item].value)
+                }
+
 
                 val jsonObject = JSONObject(result)
                 val id = jsonObject.optString("id")
